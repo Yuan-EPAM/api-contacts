@@ -3,15 +3,15 @@ const pool = require("./init");
 
 const executeQuery = (query) => {
   return new Promise((resolve, reject) => {
-    pool.getConnection((err, conn) => {
-      if (err) {
-        reject(err);
+    pool.getConnection((connErr, conn) => {
+      if (connErr) {
+        reject(connErr);
       }
 
-      conn.query(query, (error, results) => {
+      conn.query(query, (queryErr, results) => {
         conn.release();
-        if (error) {
-          reject(error);
+        if (queryErr) {
+          reject(queryErr);
         }
 
         resolve(results);
@@ -20,14 +20,11 @@ const executeQuery = (query) => {
   });
 };
 
-const getItemByNum = (num) => {
-  let query = `SELECT ?? FROM Contact LIMIT ${num}`;
-  const columns = ["UserID", "Title", "Name", "BirthDate", "IsFavorite"];
-  query = mysql.format(query, [columns]);
-
+const getItem = (queryTemplate, payload) => {
+  let query = mysql.format(queryTemplate, payload);
   return executeQuery(query);
 };
 
 module.exports = {
-  getItemByNum,
+  getItem,
 };

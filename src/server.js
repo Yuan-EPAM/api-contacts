@@ -8,12 +8,6 @@ const contactController = require("./controllers/contactController");
 server.use(cors());
 server.use(bodyParser.json());
 
-server.get("/", async (req, res) => {
-  const response = {
-    contact: await contactController.getContact(),
-  };
-  console.log(response);
-  res.status(200).send(response);
-});
+server.get("/", contactController.getContact);
 
 module.exports = server;
