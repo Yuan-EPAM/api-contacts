@@ -22,6 +22,7 @@ const executeQuery = (query) => {
 
 const getItem = (queryTemplate, payload) => {
   let query = mysql.format(queryTemplate, payload);
+  console.log(query);
   return executeQuery(query);
 };
 

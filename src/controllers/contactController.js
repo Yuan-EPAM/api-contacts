@@ -1,16 +1,25 @@
 const contactService = require("../services/contactService");
 
-const getContact = async (req, res) => {
-  const contacts = await contactService.getContactInfoByNum(50);
-  console.log(contacts);
-
+const getContactData = async (req, res) => {
+  let data;
+  if ("name" in req.query) {
+    let { name } = req.query;
+    data = await contactService.searchContactByName(name);
+  } else if ("page" in req.query) {
+    let { page } = req.query;
+    data = await contactService.getContactByPage(page);
+  } else {
+    throw new Error("Please indicate the data you'd like to get");
+  }
   const response = {
-    data: contactService.parseJSON(contacts, "ContactDetails"),
+    data: contactService.parseJSON(data, "ContactDetails"),
   };
-  console.log(response.data);
   res.status(200).send(JSON.stringify(response));
 };
 
 module.exports = {
-  getContact,
+  // getContactByNum,
+  // getContactByName,
+  // getContactByPage,
+  getContactData,
 };

@@ -1,4 +1,4 @@
-const ContactInfo = `
+const ContactInfo = (para = "") => `
   SELECT 
     c.UserID as UserID,
     c.Title as Title,
@@ -15,8 +15,8 @@ const ContactInfo = `
       isFavorite
     FROM 
       Contact
-    LIMIT
-      ?
+    ${para}
+
   ) c
   LEFT JOIN (
     SELECT 
@@ -34,7 +34,7 @@ const ContactInfo = `
     c.UserID=cd.UserID
   `;
 
-const ContactDetailByID = `
+const ContactDetailByID = () => `
     SELECT
       UserID,
       ContactDetailType,

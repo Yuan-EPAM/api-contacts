@@ -4,7 +4,8 @@ const queries = require("./queries");
 
 const getContactInfoByNum = async (num) => {
   try {
-    const contacts = await db.getItem(queries.ContactInfo, num);
+    const extraCond = "LIMIT ?";
+    const contacts = await db.getItem(queries.ContactInfo(extraCond), [num]);
 
     return contacts;
   } catch (err) {
@@ -12,9 +13,25 @@ const getContactInfoByNum = async (num) => {
   }
 };
 
-const getContactDetailByID = async (userID) => {
+const searchContactByName = async (name) => {
   try {
-    const contactDetail = await db.getItem(queries.ContactDetailByID, userID);
+    const extraCond = `WHERE Name = ?`;
+    const contact = await db.getItem(queries.ContactInfo(extraCond), [name]);
+
+    return contact;
+  } catch (err) {
+    throw Error("Error when retrieving contact detail by ID: " + err);
+  }
+};
+
+const getContactByPage = async (page) => {
+  try {
+    const itemPerPage = 20;
+    const extraCond = `LIMIT ${itemPerPage} OFFSET ?`;
+    const startIdx = itemPerPage * (parseInt(page) - 1);
+    const contactDetail = await db.getItem(queries.ContactInfo(extraCond), [
+      startIdx,
+    ]);
 
     return contactDetail;
   } catch (err) {
@@ -36,6 +53,7 @@ const parseJSON = (data, target) => {
 
 module.exports = {
   getContactInfoByNum,
-  getContactDetailByID,
+  searchContactByName,
+  getContactByPage,
   parseJSON,
 };
